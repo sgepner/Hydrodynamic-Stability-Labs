@@ -1,0 +1,35 @@
+<NEKTAR>
+    <EXPANSIONS>
+      <E COMPOSITE="C[2]" TYPE="MODIFIED" NUMMODES="7" FIELDS="w" />
+    </EXPANSIONS>
+
+    <CONDITIONS>
+        <SOLVERINFO>
+            <I PROPERTY="EQTYPE" VALUE="Poisson" />
+            <I PROPERTY="Projection" VALUE="Continuous" />
+        </SOLVERINFO>
+
+        <VARIABLES>
+            <V ID="0"> w </V>
+        </VARIABLES>
+
+        <VARIABLES>
+          <V ID="0"> w </V> 
+        </VARIABLES>
+
+        <BOUNDARYREGIONS>
+            <B ID="0"> C[1] </B>  <!-- wall -->
+        </BOUNDARYREGIONS>
+
+        <BOUNDARYCONDITIONS>
+            <REGION REF="0">
+                <D VAR="w" VALUE="0" />
+            </REGION>
+        </BOUNDARYCONDITIONS>
+
+        <FUNCTION NAME="Forcing">
+            <E VAR="w" VALUE="-4*150" />
+        </FUNCTION>
+    </CONDITIONS>
+ 
+</NEKTAR>
