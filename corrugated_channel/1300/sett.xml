@@ -1,0 +1,99 @@
+﻿<NEKTAR>
+    <EXPANSIONS>
+        <E COMPOSITE="C[10]" NUMMODES="6" TYPE="MODIFIED" FIELDS="u,v,p" />
+    </EXPANSIONS>
+
+    <FILTERS>
+        <FILTER TYPE="ModalEnergy">
+	        <PARAM NAME="OutputFile">EnergyFile</PARAM>
+	        <PARAM NAME="OutputFrequency">1.0/TimeStep</PARAM>
+        </FILTER>
+    </FILTERS>
+
+    <CONDITIONS>
+        <SOLVERINFO>
+            <I PROPERTY="SolverType" VALUE="VelocityCorrectionScheme" />
+            <I PROPERTY="EQTYPE" VALUE="UnsteadyNavierStokes" />
+            <I PROPERTY="Projection" VALUE="Continuous" />
+            <I PROPERTY="TimeIntegrationMethod" VALUE="IMEXOrder2"/>
+        </SOLVERINFO>
+
+        <PARAMETERS>
+            <P> TimeStep      = 0.01 </P>
+            <P> FinalTime     = 1000    </P>
+            <P> NumSteps      = FinalTime/TimeStep </P>
+            <P> IO_CheckSteps = 1.0/TimeStep   </P>
+            <P> IO_InfoSteps  = 1.0/TimeStep   </P>
+            <P> IO_CFLSteps   = IO_InfoSteps </P>
+            <P> Re= 1300  </P>
+            <P> Kinvis        = 1/Re   </P>
+        </PARAMETERS>
+
+        <VARIABLES>
+          <V ID="0"> u </V> 
+          <V ID="1"> v </V>
+          <V ID="2"> p </V> 
+        </VARIABLES>
+
+        <BOUNDARYREGIONS>
+            <B ID="0"> C[7] </B>  <!-- Inlet -->
+            <B ID="1"> C[8] </B>  <!-- Outlet -->
+            <B ID="2"> C[9] </B>  <!-- Wall -->
+        </BOUNDARYREGIONS>
+
+          <BOUNDARYCONDITIONS>
+            <REGION REF="0">
+                <D VAR="u" VALUE="0" />
+                <D VAR="v" VALUE="0" />
+                <N VAR="p" USERDEFINEDTYPE="H" VALUE="0" />
+            </REGION>
+            <REGION REF="1">
+                <P VAR="u" VALUE="[2]" />
+                <P VAR="v" VALUE="[2]" />
+                <P VAR="p" VALUE="[2]" />
+            </REGION>
+            <REGION REF="2">
+                <P VAR="u" VALUE="[1]" />
+                <P VAR="v" VALUE="[1]" />
+                <P VAR="p" VALUE="[1]" />
+            </REGION>
+        </BOUNDARYCONDITIONS>
+        
+        <FUNCTION NAME="BodyForce">
+            <E VAR="u" VALUE="2*Kinvis" />
+            <E VAR="v" VALUE="0" />
+        </FUNCTION>
+        
+        <FUNCTION NAME="InitialConditions">
+	        <F VAR="u,v,p" FILE="geom_init.rst"/>
+	        <!--E VAR="u" VALUE="0" /-->
+            <!--E VAR="v" VALUE="0" /-->
+            <!--E VAR="p" VALUE="0" /-->
+        </FUNCTION>
+    </CONDITIONS>
+    
+    <FORCING>
+        <FORCE TYPE="Body">
+            <BODYFORCE> BodyForce </BODYFORCE>
+        </FORCE>
+    </FORCING>
+
+    <FILTERS>
+        <FILTER TYPE="ModalEnergy">
+            <PARAM NAME="OutputFile"> energy </PARAM>
+            <PARAM NAME="OutputFrequency"> 0.5/TimeStep </PARAM>
+        </FILTER>
+        <FILTER TYPE="Mean">
+            <PARAM NAME="OutputFile"> mean </PARAM>
+            <PARAM NAME="OutputFrequency"> 0.5/TimeStep  </PARAM>
+        </FILTER>
+        <FILTER TYPE="HistoryPoints">
+            <PARAM NAME="OutputFile">pointdata</PARAM>
+            <PARAM NAME="OutputFrequency">1</PARAM>
+            <PARAM NAME="Points">
+                0.0 0.0 0.0
+            </PARAM>
+        </FILTER>
+    </FILTERS>
+
+</NEKTAR>
